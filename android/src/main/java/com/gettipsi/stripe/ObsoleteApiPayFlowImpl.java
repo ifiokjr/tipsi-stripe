@@ -313,7 +313,7 @@ public class ObsoleteApiPayFlowImpl extends PayFlow {
 
   private void androidPayUnavailableDialog(@NonNull Activity activity) {
     new AlertDialog.Builder(activity)
-      .setMessage(R.string.gettipsi_android_pay_unavaliable)
+      .setMessage(R.string.gettipsi_google_pay_unavaliable)
       .setPositiveButton(android.R.string.ok, null)
       .show();
   }
