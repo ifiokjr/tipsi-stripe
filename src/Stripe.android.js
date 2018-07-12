@@ -1,9 +1,13 @@
-import { NativeModules } from 'react-native'
+import {
+  NativeModules,
+} from 'react-native'
 import checkArgs from './utils/checkArgs'
 import checkInit from './utils/checkInit'
 import * as types from './utils/types'
 
-const { StripeModule } = NativeModules
+const {
+  StripeModule,
+} = NativeModules
 
 class Stripe {
   stripeInitialized = false

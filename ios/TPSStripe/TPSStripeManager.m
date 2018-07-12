@@ -252,11 +252,19 @@ RCT_EXPORT_METHOD(createSourceWithParams:(NSDictionary *)params
 
     NSString *sourceType = params[@"type"];
     STPSourceParams *sourceParams;
+    if ([sourceType isEqualToString:@"card"]) {
+        NSDictionary *cardParams = params[@"cardParams"];
+        NSString *tokenId = params[@"tokenId"];
+        if (cardParams) {
+            sourceParams = [STPSourceParams cardParamsWithCard:[self createCard:params[@"cardParams"]]];
+        } else if (tokenId) {
+            sourceParams = [STPSourceParams new];
+            sourceParams.type = STPSourceTypeCard;
+            sourceParams.token = tokenId;
+        }
+    }
     if ([sourceType isEqualToString:@"bancontact"]) {
          sourceParams = [STPSourceParams bancontactParamsWithAmount:[[params objectForKey:@"amount"] unsignedIntegerValue] name:params[@"name"] returnURL:params[@"returnURL"] statementDescriptor:params[@"statementDescriptor"]];
-    }
-    if ([sourceType isEqualToString:@"bitcoin"]) {
-         sourceParams = [STPSourceParams bitcoinParamsWithAmount:[[params objectForKey:@"amount"] unsignedIntegerValue] currency:params[@"currency"] email:params[@"email"]];
     }
     if ([sourceType isEqualToString:@"giropay"]) {
          sourceParams = [STPSourceParams giropayParamsWithAmount:[[params objectForKey:@"amount"] unsignedIntegerValue] name:params[@"name"] returnURL:params[@"returnURL"] statementDescriptor:params[@"statementDescriptor"]];
@@ -443,6 +451,26 @@ RCT_EXPORT_METHOD(openApplePaySetup) {
 
 #pragma mark - Private
 
+- (STPCardParams *)createCard:(NSDictionary *)params {
+    STPCardParams *cardParams = [[STPCardParams alloc] init];
+
+    [cardParams setNumber: params[@"number"]];
+    [cardParams setExpMonth: [params[@"expMonth"] integerValue]];
+    [cardParams setExpYear: [params[@"expYear"] integerValue]];
+    [cardParams setCvc: params[@"cvc"]];
+
+    [cardParams setCurrency: params[@"currency"]];
+    [cardParams setName: params[@"name"]];
+    [cardParams setAddressLine1: params[@"addressLine1"]];
+    [cardParams setAddressLine2: params[@"addressLine2"]];
+    [cardParams setAddressCity: params[@"addressCity"]];
+    [cardParams setAddressState: params[@"addressState"]];
+    [cardParams setAddressCountry: params[@"addressCountry"]];
+    [cardParams setAddressZip: params[@"addressZip"]];
+
+    return cardParams;
+}
+
 - (void)resolvePromise:(id)result {
     if (promiseResolver) {
         promiseResolver(result);
@@ -572,7 +600,7 @@ RCT_EXPORT_METHOD(openApplePaySetup) {
         NSMutableDictionary *card = [@{} mutableCopy];
         [result setValue:card forKey:@"card"];
 
-        [card setValue:token.card.cardId forKey:@"cardId"];
+        [card setValue:token.card.stripeID forKey:@"cardId"];
 
         [card setValue:[self cardBrand:token.card.brand] forKey:@"brand"];
         [card setValue:[self cardFunding:token.card.funding] forKey:@"funding"];
@@ -639,13 +667,15 @@ RCT_EXPORT_METHOD(openApplePaySetup) {
         [result setValue:owner forKey:@"owner"];
 
         if (source.owner.address) {
-            [owner setValue:[self address:source.owner.address] forKey:@"address"];
+            // Commented out for now as it's breaking stuff
+            // [owner setValue:[self address:source.owner.address] forKey:@"address"];
         }
         [owner setValue:source.owner.email forKey:@"email"];
         [owner setValue:source.owner.name forKey:@"name"];
         [owner setValue:source.owner.phone forKey:@"phone"];
         if (source.owner.verifiedAddress) {
-            [owner setValue:[self address:source.owner.verifiedAddress] forKey:@"verifiedAddress"];
+            // Commented out for now as it's breaking stuff
+            // [owner setValue:[self address:source.owner.verifiedAddress] forKey:@"verifiedAddress"];
         }
         [owner setValue:source.owner.verifiedEmail forKey:@"verifiedEmail"];
         [owner setValue:source.owner.verifiedName forKey:@"verifiedName"];
@@ -842,8 +872,8 @@ RCT_EXPORT_METHOD(openApplePaySetup) {
     switch (inputType) {
         case STPSourceTypeBancontact:
             return @"bancontact";
-        case STPSourceTypeBitcoin:
-            return @"bitcoin";
+        case STPSourceTypeCard:
+            return @"card";
         case STPSourceTypeGiropay:
             return @"giropay";
         case STPSourceTypeIDEAL:

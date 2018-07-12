@@ -210,7 +210,32 @@ public class StripeModule extends ReactContextBaseJavaModule {
   public void createSourceWithParams(final ReadableMap options, final Promise promise) {
     String sourceType = options.getString("type");
     SourceParams sourceParams = null;
+    ReadableMap cardParams = null;
+    String tokenId = null;
+
+    try {
+      cardParams = options.getMap("cardParams");
+    } catch (Exception e) {
+      // Nothing here
+    }
+
+    try {
+      tokenId = options.getString("tokenId");
+    } catch (Exception e) {
+      // Nothing here
+    }
+
     switch (sourceType) {
+      case "card":
+        if (cardParams != null) {
+          sourceParams = SourceParams.createCardParams(Converters.createCard(cardParams));
+        } else if (tokenId != null) {
+          sourceParams = SourceParams.createCustomParams()
+            .setType(Source.CARD)
+            .setToken(tokenId);
+        }
+
+		  	break;
       case "alipay":
         sourceParams = SourceParams.createAlipaySingleUseParams(
             options.getInt("amount"),
@@ -225,10 +250,6 @@ public class StripeModule extends ReactContextBaseJavaModule {
             options.getString("name"),
             options.getString("returnURL"),
             getStringOrNull(options, "statementDescriptor"));
-        break;
-      case "bitcoin":
-        sourceParams = SourceParams.createBitcoinParams(
-            options.getInt("amount"), options.getString("currency"), options.getString("email"));
         break;
       case "giropay":
         sourceParams = SourceParams.createGiropayParams(

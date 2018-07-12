@@ -1,23 +1,27 @@
-import { NativeModules } from 'react-native'
+import {
+  NativeModules,
+} from 'react-native'
 import processTheme from './utils/processTheme'
 import checkArgs from './utils/checkArgs'
 import checkInit from './utils/checkInit'
 import * as types from './utils/types'
 
-const { TPSStripeManager } = NativeModules
+const {
+  TPSStripeManager,
+} = NativeModules
 
 class Stripe {
   stripeInitialized = false
 
   constructor() {
     if (TPSStripeManager) {
-
       // Error domain
       this.TPSErrorDomain = TPSStripeManager.TPSErrorDomain
 
       // Error codes
       this.TPSErrorCodeApplePayNotConfigured = TPSStripeManager.TPSErrorCodeApplePayNotConfigured
-      this.TPSErrorCodePreviousRequestNotCompleted = TPSStripeManager.TPSErrorCodePreviousRequestNotCompleted
+      this.TPSErrorCodePreviousRequestNotCompleted =
+        TPSStripeManager.TPSErrorCodePreviousRequestNotCompleted
       this.TPSErrorCodeUserCancel = TPSStripeManager.TPSErrorCodeUserCancel
     }
   }
@@ -46,8 +50,9 @@ class Stripe {
   paymentRequestWithApplePay = (items = [], options = {}) => {
     checkInit(this)
     checkArgs(
-      types.paymentRequestWithApplePayItemsPropTypes,
-      { items }, 'items', 'Stripe.paymentRequestWithApplePay'
+      types.paymentRequestWithApplePayItemsPropTypes, {
+        items,
+      }, 'items', 'Stripe.paymentRequestWithApplePay'
     )
     checkArgs(
       types.paymentRequestWithApplePayOptionsPropTypes,

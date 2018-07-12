@@ -10,13 +10,13 @@ export const availableApplePayShippingTypes = [
 ]
 export const availableSourceTypes = [
   'bancontact',
-  'bitcoin',
   'giropay',
   'ideal',
   'sepaDebit',
   'sofort',
   'threeDSecure',
   'alipay',
+  'card',
 ]
 
 export const setOptionsOptionsPropTypes = {
@@ -137,6 +137,27 @@ export const paymentRequestWithAndroidPayOptionsPropTypes = {
   billing_address_required: PropTypes.bool,
 }
 
+export const cardParamsPropType = {
+  number: PropTypes.string,
+  expMonth: PropTypes.number,
+  expYear: PropTypes.number,
+  cvc: PropTypes.string,
+  name: PropTypes.string,
+  addressLine1: PropTypes.string,
+  addressLine2: PropTypes.string,
+  addressCity: PropTypes.string,
+  addressState: PropTypes.string,
+  addressZip: PropTypes.string,
+  addressCountry: PropTypes.string,
+  brand: PropTypes.string,
+  last4: PropTypes.string,
+  fingerprint: PropTypes.string,
+  funding: PropTypes.string,
+  country: PropTypes.string,
+  currency: PropTypes.string,
+  id: PropTypes.string,
+}
+
 export const createSourceWithParamsPropType = {
   type: PropTypes.oneOf(availableSourceTypes).isRequired,
   amount: PropTypes.number,
@@ -152,4 +173,6 @@ export const createSourceWithParamsPropType = {
   postalCode: PropTypes.string,
   country: PropTypes.string,
   card: PropTypes.string,
+  cardParams: PropTypes.shape(cardParamsPropType),
+  tokenId: PropTypes.string,
 }
