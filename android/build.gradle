@@ -4,12 +4,12 @@ def DEFAULT_COMPILE_SDK_VERSION = 27
 def DEFAULT_BUILD_TOOLS_VERSION = "27.0.3"
 def DEFAULT_TARGET_SDK_VERSION = 27
 def DEFAULT_SUPPORT_LIB_VERSION = "27.1.1"
-
+def DEFAULT_GOOGLE_PLAY_SERVICES_VERSION    = '15.0.1'
+def DEFAULT_FIREBASE_MESSAGING_VERSION      = '16.0.1'
 
 android {
   compileSdkVersion rootProject.hasProperty('compileSdkVersion') ? rootProject.compileSdkVersion : DEFAULT_COMPILE_SDK_VERSION
   buildToolsVersion rootProject.hasProperty('buildToolsVersion') ? rootProject.buildToolsVersion : DEFAULT_BUILD_TOOLS_VERSION
-
 
   defaultConfig {
     minSdkVersion 16
@@ -33,12 +33,15 @@ def supportVersion = rootProject.hasProperty('supportLibVersion') ? rootProject.
 
 
 dependencies {
+  def firebaseVersion = project.hasProperty('firebaseVersion') ? project.firebaseVersion : DEFAULT_FIREBASE_MESSAGING_VERSION
+  def googlePlayServicesVersion = rootProject.hasProperty('googlePlayServicesVersion')  ? rootProject.googlePlayServicesVersion : DEFAULT_GOOGLE_PLAY_SERVICES_VERSION
+
   implementation fileTree(include: ['*.jar'], dir: 'libs')
   implementation 'com.facebook.react:react-native:+'
   implementation "com.android.support:support-v4:$supportVersion"
   implementation "com.android.support:appcompat-v7:$supportVersion"
-  implementation "com.google.android.gms:play-services-wallet:15.0.1"
-  implementation "com.google.firebase:firebase-core:16.0.1"
+  implementation "com.google.android.gms:play-services-wallet:$googlePlayServicesVersion"
+  implementation "com.google.firebase:firebase-core:$firebaseVersion"
   implementation "com.google.firebase:firebase-iid:16.2.0"
   implementation 'com.stripe:stripe-android:7.1.0'
   implementation 'com.github.tipsi:CreditCardEntry:1.4.8.10'
